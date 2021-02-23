@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  db:
+    image: mysql:5.7
+    container_name: UserDb
+    restart: always
+    environment:
+      - MYSQL_DATABASE=User
+      - MYSQL_ROOT_PASSWORD=44qf'(/HK@;s_89_
+    ports:
+      - '3306:3306'
+    volumes: 
+      - my-db:/var/lib/mysql
+      - ./db_conf:/docker-entrypoint-initdb.
+      - ./db_conf/initial.sql:/docker-entrypoint-initdb.d/initial.sql
