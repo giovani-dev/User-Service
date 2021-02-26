@@ -5,11 +5,18 @@ services:
     container_name: UserDb
     restart: always
     environment:
-      - MYSQL_DATABASE=User
-      - MYSQL_ROOT_PASSWORD=44qf'(/HK@;s_89_
+      MYSQL_USER: 'api'
+      # MYSQL_DATABASE: 'user_data_base'
+      MYSQL_PASSWORD: 'wtAGC7VbSLx2ZHVv'
+      MYSQL_ROOT_PASSWORD: '925kGnQGPRx5YEJ5'
     ports:
+      # <Port exposed> : < MySQL Port running inside container>
       - '3306:3306'
+    expose:
+      - '3306'
     volumes: 
       - my-db:/var/lib/mysql
       - ./db_conf:/docker-entrypoint-initdb.
       - ./db_conf/initial.sql:/docker-entrypoint-initdb.d/initial.sql
+volumes: 
+  my-db:
