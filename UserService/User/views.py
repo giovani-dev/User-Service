@@ -28,6 +28,7 @@ class ListAllProfiles(base_view.ListAllView):
 class ProfileDetail(base_view.GetUpdateDestroyView):
     serializer_class = ProfileDetailSerializer
     permission_classes = [AllowAny]
+    CACHE = True
     MODEL = Profile
     SLUG_TAG = 'profile'
     ERROR_MSG_QUERY_DOES_NOT_EXIST = "Profile does not exist."

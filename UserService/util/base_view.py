@@ -26,13 +26,14 @@ class ListAllView(generics.ListAPIView):
         return self.QUERY
 
 class GetUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    CACHE = False
     MODEL = object()
     SLUG_TAG = str()
     ERROR_MSG_QUERY_DOES_NOT_EXIST = str()
 
     def retrieve(self, request, *args, **kwargs):
         response_cached = cache.get(self.kwargs[self.SLUG_TAG])
-        if response_cached:
+        if response_cached and self.CACHE:
             return Response(response_cached)
         else:
             instance = self.get_object()
@@ -42,12 +43,13 @@ class GetUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
     def put(self, request, *args, **kwargs):
         updated = super(GetUpdateDestroyView, self).put(request, *args, **kwargs)
-        self.set_cache(data=updated.data)
+        if self.CACHE:
+            self.set_cache(data=updated.data)
         return updated
 
     def get_object(self):
         try:
-            if self.request.method == "DELETE":
+            if self.request.method == "DELETE" and self.CACHE:
                 cache.delete(self.kwargs[self.SLUG_TAG])
             return self.MODEL.objects.get(identifier=self.kwargs[self.SLUG_TAG])
         except self.MODEL.DoesNotExist:
