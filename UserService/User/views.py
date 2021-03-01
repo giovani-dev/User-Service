@@ -1,43 +1,33 @@
 from django.shortcuts import render
+from django.utils.translation import ugettext_lazy as _
+from django.core.cache import cache
+
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
-from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
+
 from User.serializer import ProfileSerializer, ProfileDetailSerializer
 from User.models import Profile
 
-# from rest_framework.pagination import PageNumberPagination
+from util import base_view
 
-# class StandardResultsSetPagination(PageNumberPagination):
-#     page_size = 100
-#     page_size_query_param = 'page_size'
-#     max_page_size = 1000
+import json
 
 
-# Create your views here.
-class CreateUser(generics.CreateAPIView):
+class CreateUser(base_view.CreateView):
     serializer_class = ProfileSerializer
     permission_classes = [AllowAny]
 
-    def perform_create(self, serializer):
-        serializer.save()
+
+class ListAllProfiles(base_view.ListAllView):
+    permission_classes = [AllowAny]
+    serializer_class = ProfileDetailSerializer
+    QUERY = Profile.objects.filter(login__is_active=False).order_by('-registration_date')
 
 
-class ProfileDetail(generics.RetrieveAPIView):
+class ProfileDetail(base_view.GetUpdateDestroyView):
     serializer_class = ProfileDetailSerializer
     permission_classes = [AllowAny]
-
-    def get_object(self):
-        try:
-            return Profile.objects.get(identifier=self.kwargs['profile'])
-        except Exception:
-            raise NotFound(detail="Profile does not exist.")
-
-
-class ListAllProfiles(generics.ListAPIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request, *args, **kwargs):
-        query_profile = Profile.objects.all()
-        serial_profile = ProfileDetailSerializer(query_profile, many=True)
-        return Response(serial_profile.data)
+    MODEL = Profile
+    SLUG_TAG = 'profile'
+    ERROR_MSG_QUERY_DOES_NOT_EXIST = "Profile does not exist."

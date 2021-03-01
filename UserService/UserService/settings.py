@@ -25,8 +25,7 @@ SECRET_KEY = 'cyct78$v@+h2=!x7^gy9#)p%be0sov8(wrm%rcg=@o07%^1am('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -37,7 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'User'
+    'User',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -82,6 +82,16 @@ DATABASES = {
         'PASSWORD': '925kGnQGPRx5YEJ5',
         'HOST': '127.0.0.1',
         'PORT': '3306'
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
     }
 }
 
